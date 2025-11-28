@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="hy">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ֆիբոնաչիի հաջորդ ոսկե հատումը ճարտարապետության մեջ</title>
+  <style>
+    /* Microsoft Fluent Design System inspired */
+    :root {
+      --primary: #0078d4;
+      --primary-dark: #106ebe;
+      --primary-light: #c7e0f4;
+      --secondary: #d83b01;
+      --light: #ffffff;
+      --dark: #201f1e;
+      --gray: #605e5c;
+      --light-gray: #f3f2f1;
+      --success: #107c10;
+      --danger: #a80000;
+      --elevation-1: 0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132), 0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108);
+      --elevation-2: 0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132), 0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108);
+      --elevation-3: 0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132), 0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      background: var(--light-gray);
+      color: var(--dark);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem 1rem;
+      background: var(--light);
+      box-shadow: var(--elevation-2);
+      position: relative;
+      z-index: 10;
+      border-bottom: 1px solid #edebe9;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      color: var(--primary-dark);
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+    }
+
+    .school-name {
+      font-size: 1.1rem;
+      color: var(--gray);
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 0.25rem;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+      background: var(--light);
+      padding: 0.5rem;
+      border-radius: 8px;
+      box-shadow: var(--elevation-1);
+      width: fit-content;
+      margin: 2rem auto;
+    }
+
+    .tab-btn {
+      padding: 0.75rem 1.5rem;
+      background: transparent;
+      border: none;
+      color: var(--gray);
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+      font-size: 0.95rem;
+    }
+
+    .tab-btn:hover {
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .tab-btn.active {
+      color: var(--light);
+      background: var(--primary);
+      box-shadow: var(--elevation-1);
+    }
+
+    .tab-content {
+      display: none;
+      padding: 2rem 0;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .tab-content.active {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      color: var(--primary-dark);
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    @media (max-width: 768px) {
+      .content {
+        grid-template-columns: 1fr;
+      }
+      h1 {
+        font-size: 1.8rem;
+      }
+      .section-title {
+        font-size: 1.5rem;
+      }
+    }
+
+    .text {
+      font-size: 1.05rem;
+      color: var(--dark);
+      background: var(--light);
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: var(--elevation-1);
+    }
+
+    .text p {
+      margin-bottom: 1rem;
+      line-height: 1.7;
+    }
+
+    .image {
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: var(--elevation-2);
+      height: fit-content;
+      background: white;
+    }
+
+    .image img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .image:hover img {
+      transform: scale(1.02);
+    }
+
+    .quiz-section {
+      padding: 3rem 0;
+      text-align: center;
+    }
+
+    .quiz-title {
+      font-size: 1.8rem;
+      color: var(--primary-dark);
+      margin-bottom: 2rem;
+      font-weight: 600;
+    }
+
+    .question-container {
+      background: var(--light);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: var(--elevation-2);
+      max-width: 700px;
+      margin: 0 auto;
+      border: 1px solid #edebe9;
+    }
+
+    .question {
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+      color: var(--dark);
+      font-weight: 500;
+      line-height: 1.5;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .option {
+      padding: 1rem;
+      background: var(--light);
+      border: 2px solid #edebe9;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+      font-size: 1.05rem;
+      font-weight: 500;
+    }
+
+    .option:hover {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .option.selected {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+
+    .submit-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.1s ease;
+      box-shadow: var(--elevation-1);
+    }
+
+    .submit-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .submit-btn:active {
+      transform: translateY(0);
+    }
+
+    .submit-btn:disabled {
+      background: #e1dfdd;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .result {
+      margin-top: 1.5rem;
+      font-size: 1.2rem;
+      font-weight: 600;
+      min-height: 2rem;
+    }
+
+    .emoji {
+      font-size: 3rem;
+      margin: 1rem 0;
+      display: block;
+      animation: bounce 0.6s ease;
+    }
+
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+      40% {transform: translateY(-20px);}
+      60% {transform: translateY(-10px);}
+    }
+
+    .progress {
+      margin-top: 1rem;
+      font-size: 0.95rem;
+      color: var(--gray);
+      font-weight: 500;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--gray);
+      font-size: 0.9rem;
+      background: var(--light);
+      margin-top: 2rem;
+      border-top: 1px solid #edebe9;
+    }
+
+    /* Animation for content */
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .text, .image {
+      animation: slideUp 0.6s ease forwards;
+    }
+
+    .text { animation-delay: 0.1s; }
+    .image { animation-delay: 0.2s; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Ֆիբոնաչիի հաջորդ ոսկե հատումը ճարտարապետության մեջ</h1>
+    <div class="school-name">ՈՒսումնական նախագիծ՝ ԵՊԲՀ ԱՎԱԳ ԴՊՐՈՑ ՀԵՐԱՑԻ</div>
+  </header>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="intro">Ներածություն</button>
+      <button class="tab-btn" data-tab="history">Պատմություն</button>
+      <button class="tab-btn" data-tab="examples">Օրինակներ</button>
+      <button class="tab-btn" data-tab="modern">Ժամանակակից</button>
+    </div>
+
+    <div id="intro" class="tab-content active">
+      <h2 class="section-title">Ներածություն ոսկե հատման և Ֆիբոնաչիի հաջորդականության մեջ</h2>
+      <div class="content">
+        <div class="text">
+          <p>Ոսկե հատումը (φ ≈ 1.618) մաթեմատիկական հարաբերակցություն է, որը հաճախ հանդիպում է բնության մեջ, արվեստում և ճարտարապետության մեջ: Այն համարվում է գեղեցկության և համաչափության խորհրդանիշ:</p>
+          <p>Ֆիբոնաչիի հաջորդականությունը (0, 1, 1, 2, 3, 5, 8, 13...) թվերի շարք է, որտեղ յուրաքանչյուր հաջորդ թիվ հավասար է նախորդ երկուսի գումարին: Երբ մենք բաժանում ենք ցանկացած թիվ նախորդ մեկի վրա, արդյունքը մոտենում է ոսկե հատմանը:</p>
+          <p>Ճարտարապետները դարեր շարունակ օգտագործել են այս հարաբերակցությունը՝ ստեղծելով համաչափ և գեղեցիկ կառույցներ, որոնք գրավում են մարդկանց աչքը:</p>
+        </div>
+        <div class="image">
+          <img src="https://placehold.co/600x400/0078d4/FFFFFF?text=Ոսկե+հատում+դիագրամ" alt="Ոսկե հատում դիագրամ">
+        </div>
+      </div>
+    </div>
+
+    <div id="history" class="tab-content">
+      <h2 class="section-title">Պատմություն ճարտարապետության մեջ</h2>
+      <div class="content">
+        <div class="text">
+          <p>Ոսկե հատումը հայտնի է եղել հին հույներին, ովքեր այն անվանել են «աստվածային համաչափություն»: Էվկլիդեսը Ք.ծ. 300 թվականին նկարագրել է այս մաթեմատիկական հարաբերակցությունը:</p>
+          <p>Վերածնության դարաշրջանի ճարտարապետները, ինչպես Լեոն Բատտիստա Ալբերտին և Լեոնարդո դա Վինչին, հիմնվել են ոսկե հատման վրա՝ ստեղծելով իրենց գործերը:</p>
+          <p>Հին եգիպտացիները և հույները նույնպես օգտագործել են այս սկզբունքները իրենց տաճարների և շինությունների կառուցման ժամանակ, թեև որոշ պատմաբաններ վիճարկում են դրա նպատակասլաց կիրառումը:</p>
+        </div>
+        <div class="image">
+          <img src="https://placehold.co/600x400/d83b01/FFFFFF?text=Պարթենոն" alt="Պարթենոն">
+        </div>
+      </div>
+    </div>
+
+    <div id="examples" class="tab-content">
+      <h2 class="section-title">Հայտնի շենքերի օրինակներ</h2>
+      <div class="content">
+        <div class="text">
+          <p><strong>Պարթենոն (Աթենք, Հունաստան)</strong> - Այս հին հունական տաճարի ճակատամասը կազմված է ոսկե ուղղանկյուններից, որոնք հիմնված են φ հարաբերակցության վրա:</p>
+          <p><strong>Նոտր Դամ տաճար (Փարիզ, Ֆրանսիա)</strong> - Գոթական ճարտարապետության այս գլուխգործոցը ցույց է տալիս ոսկե հատման տարրեր իր ճակատամասի և պատուհանների համաչափություններում:</p>
+          <p><strong>Վերածնության պալատներ (Իտալիա)</strong> - Վերածնության դարաշրջանի պալատները, ինչպես Պալացցո Ստրոցցին, օգտագործում են Ֆիբոնաչիի հաջորդականությունը իրենց հարկերի բարձրությունների հարաբերակցություններում:</p>
+        </div>
+        <div class="image">
+          <img src="https://placehold.co/600x400/107c10/FFFFFF?text=Նոտր+Դամ" alt="Նոտր Դամ">
+        </div>
+      </div>
+    </div>
+
+    <div id="modern" class="tab-content">
+      <h2 class="section-title">Ժամանակակից ճարտարապետական նախագծեր</h2>
+      <div class="content">
+        <div class="text">
+          <p>Ժամանակակից ճարտարապետները շարունակում են օգտագործել ոսկե հատումը՝ համատեղելով ավանդույթներն արդիական տեխնոլոգիաների հետ:</p>
+          <p><strong>ՅՈՒՆԻՍԵՖ շենք (Նյու Յորք)</strong> - Այս շենքի նախագծում օգտագործվել է ոսկե հատում՝ ստեղծելով համաչափ և ֆունկցիոնալ տարածքներ:</p>
+          <p><strong>Մոդուլային տներ</strong> - Ժամանակակից տների նախագծման մեջ Ֆիբոնաչիի հաջորդականությունը օգտագործվում է սենյակների չափսերի և լուսավորության օպտիմալացման համար:</p>
+          <p>Ոսկե հատումը նաև օգտագործվում է քաղաքաշինության մեջ՝ ձևավորելով պուրակներ, հրապարակներ և փողոցների համաչափություններ:</p>
+        </div>
+        <div class="image">
+          <img src="https://placehold.co/600x400/a80000/FFFFFF?text=Ժամանակակից+շենք" alt="Ժամանակակից շենք">
+        </div>
+      </div>
+    </div>
+
+    <div class="quiz-section">
+      <h2 class="quiz-title">Ինտերակտիվ վիկտորինա</h2>
+      <div class="question-container">
+        <div class="question" id="question">Ո՞րն է ոսկե հատման մոտավոր արժեքը:</div>
+        <div class="options" id="options">
+          <!-- Options will be populated by JavaScript -->
+        </div>
+        <button class="submit-btn" id="submitBtn">Պատասխանել</button>
+        <div class="result" id="result"></div>
+        <div class="progress" id="progress">Հարց 1 / 5</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Ստեղծված է ուսումնական նպատակներով | ԵՊԲՀ ԱՎԱԳ ԴՊՐՈՑ ՀԵՐԱՑԻ</p>
+  </footer>
+
+  <script>
+    // Tab switching functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      const tabContents = document.querySelectorAll('.tab-content');
+
+      tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          // Remove active class from all buttons and content
+          tabButtons.forEach(btn => btn.classList.remove('active'));
+          tabContents.forEach(content => content.classList.remove('active'));
+          
+          // Add active class to clicked button
+          button.classList.add('active');
+          
+          // Show corresponding content
+          const tabId = button.getAttribute('data-tab');
+          document.getElementById(tabId).classList.add('active');
+        });
+      });
+
+      // Quiz functionality
+      const quizData = [
+        {
+          question: "Ո՞րն է ոսկե հատման մոտավոր արժեքը:",
+          options: ["1.414", "1.618", "2.718"],
+          correct: "1.618",
+          emoji: "🌟"
+        },
+        {
+          question: "Ո՞ր հին հունական տաճարն է հայտնի ոսկե հատման օգտագործմամբ:",
+          options: ["Փարոսի փարոս", "Պարթենոն", "Հեփեստոսի տաճար"],
+          correct: "Պարթենոն",
+          emoji: "🏛️"
+        },
+        {
+          question: "Ի՞նչ է Ֆիբոնաչիի հաջորդականության հաջորդ թիվը 8-ից հետո:",
+          options: ["10", "12", "13"],
+          correct: "13",
+          emoji: "🔢"
+        },
+        {
+          question: "Ո՞վ է համարվում ոսկե հատման նկարագրող հին հույն մաթեմատիկոս:",
+          options: ["Պյութագորաս", "Էվկլիդես", "Արքիմեդես"],
+          correct: "Էվկլիդես",
+          emoji: "📐"
+        },
+        {
+          question: "Ո՞ր ճարտարապետն է կապված ոսկե հատման և վերածնության ճարտարապետության հետ:",
+          options: ["Լեոնարդո դա Վինչի", "Միքելանջելո", "Բրունելլեսկի"],
+          correct: "Լեոնարդո դա Վինչի",
+          emoji: "🎨"
+        }
+      ];
+
+      let currentQuestion = 0;
+      let selectedOption = null;
+      let score = 0;
+
+      const questionElement = document.getElementById('question');
+      const optionsElement = document.getElementById('options');
+      const submitBtn = document.getElementById('submitBtn');
+      const resultElement = document.getElementById('result');
+      const progressElement = document.getElementById('progress');
+
+      function loadQuestion() {
+        const currentQuiz = quizData[currentQuestion];
+        questionElement.textContent = currentQuiz.question;
+        optionsElement.innerHTML = '';
+        
+        currentQuiz.options.forEach(option => {
+          const optionElement = document.createElement('div');
+          optionElement.className = 'option';
+          optionElement.textContent = option;
+          optionElement.setAttribute('data-value', option);
+          optionElement.addEventListener('click', () => selectOption(optionElement, option));
+          optionsElement.appendChild(optionElement);
+        });
+        
+        progressElement.textContent = `Հարց ${currentQuestion + 1} / ${quizData.length}`;
+        resultElement.textContent = '';
+        resultElement.innerHTML = '';
+        selectedOption = null;
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Պատասխանել';
+      }
+
+      function selectOption(element, value) {
+        // Remove selected class from all options
+        document.querySelectorAll('.option').forEach(opt => {
+          opt.classList.remove('selected');
+        });
+        // Add selected class to clicked option
+        element.classList.add('selected');
+        selectedOption = value;
+      }
+
+      function checkAnswer() {
+        if (selectedOption === null) {
+          resultElement.textContent = 'Խնդրում ենք ընտրել պատասխան:';
+          resultElement.style.color = 'var(--danger)';
+          return;
+        }
+
+        const currentQuiz = quizData[currentQuestion];
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Ստուգում...';
+
+        if (selectedOption === currentQuiz.correct) {
+          resultElement.innerHTML = 'Ճիշտ է! <div class="emoji">' + currentQuiz.emoji + '</div>';
+          resultElement.style.color = 'var(--success)';
+          score++;
+        } else {
+          resultElement.innerHTML = `Սխալ: Ճիշտ պատասխանը <strong>${currentQuiz.correct}</strong> է: <div class="emoji">❌</div>`;
+          resultElement.style.color = 'var(--danger)';
+        }
+
+        // Move to next question after delay
+        setTimeout(() => {
+          currentQuestion++;
+          if (currentQuestion < quizData.length) {
+            loadQuestion();
+          } else {
+            showFinalResult();
+          }
+        }, 2000);
+      }
+
+      function showFinalResult() {
+        const percentage = Math.round((score / quizData.length) * 100);
+        let emoji = '🥉';
+        if (percentage >= 80) emoji = '🥇';
+        else if (percentage >= 60) emoji = '🥈';
+        
+        questionElement.textContent = 'Վիկտորինան ավարտված է!';
+        optionsElement.innerHTML = '';
+        submitBtn.style.display = 'none';
+        resultElement.innerHTML = `
+          <div class="emoji">${emoji}</div>
+          <div style="font-size: 1.4rem; margin: 1rem 0; font-weight: 600;">Ձեր արդյունքը՝ ${score} / ${quizData.length}</div>
+          <div style="font-size: 1.1rem; color: var(--gray);">${percentage}% ճիշտ</div>
+        `;
+        progressElement.textContent = 'Վիկտորինան ավարտված է';
+      }
+
+      submitBtn.addEventListener('click', checkAnswer);
+
+      // Initialize first question
+      loadQuestion();
+    });
+  </script>
+</body>
+</html>
+
